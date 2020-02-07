@@ -1,13 +1,10 @@
-# dat110-project2-startcode
-start code for project 2 in the DAT110 course
-
-## Week 8 Project : 25.02 - 01.03
+## DAT110 - Project 2: Publish-subscribe messaging middleware
 
 ### Organisation
 
-Week 8 is devoted to project work which is to be undertaken in **groups of 2-3 students**. Discussions among the groups are allowed, but the code handed in by the group should be the work of the group members - and not members of other groups.
+Week 9 and 10 is devoted to project work which is to be undertaken in **groups of 2-4 students**. Discussions among the groups are allowed, but the code handed in by the group should be the work of the group members - and not members of other groups.
 
-There will be no lectures on Wednesday 27/2 and Friday 1/3, but there will be labs Thursday/Friday at the normal time-slots. You also are strongly encouraged to use the [discussion forum](https://hvl.instructure.com/courses/6156/discussion_topics/34796) in Canvas throughout the project week.
+There will be no lectures on Wednesday 26/2, but there will be labs at the normal time-slots. You also are encouraged to use the [discussion forum](https://hvl.instructure.com/courses/10943/discussion_topics/74045) in Canvas throughout the project week.
 
 ### Overview
 
@@ -25,9 +22,9 @@ The project is comprised of the following main tasks:
 
 2. Implement the storage of topics and subscriptions in the broker, and the processing of publish-subscribe messages received from connected clients.
 
-3. Application of the PB-MOM for implementing a small IoT system in which a sensor publishes the current temperature on a temperature topic to which a display is describing (see also lab-exercises from earlier weeks).
+3. Application of the PB-MOM for implementing a small IoT system in which a sensor publishes the current temperature on a temperature topic to which a display is describing (see also lab-exercises from earlier weeks and project 1).
 
-4. Experiment with PB-MOM for implementing the ChApp (Chat Application) where users can send short messages to each other via topics.
+4. Experiment with PB-MOM for implementing the ChApp (Chat Social Network Application) where users can send short messages to each other via topics.
 
 5. Extend the broker from being single-threaded to being multi-threaded having a thread for handling each connected client.
 
@@ -43,7 +40,7 @@ https://github.com/selabhvl/dat110-project2-startcode.git
 
 which contains an Eclipse-project with start-code. In addition, it also contains a number of unit tests which can be used for some basic testing of the implemented functionality. The unit-tests should not be modified/removed as they will be used for evaluation of the submitted solution.
 
-When opening the project in Eclipse, there will be some compile-errors. These will go away as you complete the implementation of the tasks below.
+**NOTE** When opening the project in Eclipse, there will be some compile-errors. These will go away as you complete the implementation of the tasks below.
 
 In order for the group to use their own git-repository for the further work on the codebase, one member of the group must create an empty repository on github/bitbucket without a README file and without a `.gitignore` file, and then perform the following operations
 
@@ -57,7 +54,7 @@ The other group members can now clone this new repository and work with a shared
 
 ### Taks 1: Publish-subscribe Protocol Messages
 
-The messages to be exchanged between the clients and the broker is to be defined as classes in the `no.hvl.dat110.messages` package. The base message class is `Message` and all messages classes must be subclasses of this class. All messages will contain information about a `user` and have a `type` as defined in `MessageType.java`. The `user` is assumed to uniquely identify a connected client.
+The messages to be exchanged between the clients and the broker is to be defined as classes in the `no.hvl.dat110.messages` package. The base message class is `Message` and all message classes must be subclasses of this class. All messages will contain information about a `user` and have a `type` as defined in `MessageType.java`. The `user` is assumed to uniquely identify a connected client.
 
 The communication between the client and the broker is to be based on the message transport layer/service implemented as part of project 1. An implementation of this layer is provided a part of the start-code in the `no.hvl.dat110.messagetransport` package
 
@@ -85,11 +82,11 @@ The message-classes must have a constructor that can give a value to all object-
 
 The implementation of the broker can be found in the `no.hvl.dat110.broker` package. You will have to study the code of the broker which is comprised of the following subclasses
 
-- `ClientSesssion.java` which is used to represent a *session* with a currently connected client on the broker side. Whenever a client (user) connects, a corresponding `ClientSession`-object will be created on the broker-side encapsulating the underlying message transport connection.
+- `ClientSesssion.java` used to represent a *session* with a currently connected client on the broker side. Whenever a client (user) connects, a corresponding `ClientSession`-object will be created on the broker-side encapsulating the underlying message transport connection.
 
 - `Storage.java` which is to implement the storage of currently connected clients and manage the subscription of clients (users) to topics. **You will complete the implementation of this class in Task 2.1 below.**
 
-- `Broker.java` implementing a `Stopable`-thread as introduced in the lecture on transport protocols. The `doProcess`-methods of the broker runs in a loop accepting incoming message transport connections (sessions) from clients.
+- `Broker.java` implementing a `Stopable`-thread abstraction. The `doProcess`-methods of the broker runs in a loop accepting incoming message transport connections (sessions) from clients.
 
 - `Dispatcher.java` implementing a `Stopable`-thread that is responsible for processing the messages received from clients. The `doProcess()`-methods of the dispatcher checks (polls) the client sessions for incoming messages and then invokes the `dispatcher`-method which, depending on the type of received message, will invoke the corresponding handler method. **You will complete the implementation of the dispatcher in Task 2.2 below.**
 
@@ -187,7 +184,7 @@ Clone the implementation of the client which is available as an Eclipse-project 
 
 https://github.com/selabhvl/dat110-project2-chapp.git
 
-If using the Java 11 SDK, then you will have to download JavaFX for your platform and then configure the project as describe here:
+If using the Java 11 SDK (or later), then you will have to download JavaFX for your platform and then configure the project as describe here:
 
 https://openjfx.io/openjfx-docs/
 
