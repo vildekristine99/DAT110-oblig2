@@ -165,7 +165,11 @@ public class Storage {
 
 The basic idea is to use a hash-map mapping from topics (`String`) to a set of users (`String`) for managing which users are subscribed to which topics. Similarly, the currently connected clients are stored in a hash-map mapping from a user (`String`) to a `ClientSession`-object representing the connection/session with the client.
 
-You are required to complete the implementation of the following methods in the classes
+The broker data model is illustrated below
+
+**TODO Figure **
+
+You are required to complete the implementation of the following methods in [Storage.java]( https://github.com/selabhvl/dat110-project2-startcode/blob/master/src/no/hvl/dat110/broker/Storage.java)
 
 - `public void addClientSession(String user, Connection connection)`
 
@@ -181,13 +185,15 @@ You are required to complete the implementation of the following methods in the 
 
 - `public Set<String> getSubscribers(String topic)`
 
-The TODO-comments in `Storage.java` class provides more detailed information about what the individual methods are supposed to do. The package `no.hvl.dat110.broker.storage.tests` contains some basic unit tests that can be used to test the implementation of the storage methods.
+The TODO-comments in `Storage.java` class provides more detailed information about what the individual methods are supposed to do.
 
-#### Task B.2 Broker Message Processing
+The package `no.hvl.dat110.broker.storage.tests` contains some basic unit tests that can be used to test the implementation of the storage methods.
 
-All communication between the broker and the connected clients will be done via the `send`, `receive`, and `hasData`-methods of the corresponding `ClientSession`-object. The encapsulation of the underlying message transport connection has been already implemented in the `ClienSession.java` class
+#### Task B.2 Broker Dispatcher for Message Processing
 
-The messages exchanged between the broker and the client will be a JSON-representation of the objects of the message-classes implemented in Task 1.  As an example, a `ConnectMsg`-object will be represented as follows:
+All communication between the broker and the connected clients will be done via the `send`, `receive`, and `hasData`-methods of the corresponding `ClientSession`-object. The encapsulation of the underlying message transport connection has been already implemented in the `ClienSession.java` class.
+
+The messages exchanged between the broker and the client will be a JSON-representation of the objects of the message-classes implemented in Task A.  As an example, a `ConnectMsg`-object will be represented as follows:
 
 ```java
 {"type":"CONNECT","user":"testuser"}
@@ -197,7 +203,7 @@ The conversion to/from the JSON format has already been implemented using the [g
 
 The aim of this task it to implement the broker-side processing of the messages received from clients in the `Dispatcher.java` class. The `doProcess`-method of the dispatcher runs in a loop where it in turn checks the current client sessions for an incoming message using the `hasData`-method. If the client has sent a message, then it will invoke the `dispatch`-method which in turn will invoke a method named on the form `onX` for a processing a message of type `X`.
 
-The dispatcher contains an implementation of the `onConnect` and on `onDisconnect`-methods. Your task is to complete the implementation of the remaining methods:
+The dispatcher contains an implementation of the `onConnect` and on `onDisconnect`-methods. Your task is to complete the implementation of the remaining methods in [Dispatcher.java](https://github.com/selabhvl/dat110-project2-startcode/blob/master/src/no/hvl/dat110/broker/Dispatcher.java)
 
 - `public void onCreateTopic(CreateTopicMsg msg)`
 
@@ -213,28 +219,90 @@ in order to be able to also process the remaining types of messages.
 
 The tests found in the `no.hvl.dat110.broker.processing.tests` package can be used to test the implemented methods.
 
-### Task 3: IoT application
+### Task C: IoT sensor-display application
 
-In this task you will use the PB-MOM middleware to implement a small IoT system comprised of a (temperature) sensor, and a display. The start of the implementation of the IoT-system can be found in the `no.hvl.dat110.iotsystem` package.
+In this task you will use the PB-MOM middleware to implement a small IoT system comprised of a (temperature) sensor, and a display.
+
+The start of the implementation of the IoT-system can be found in the `no.hvl.dat110.iotsystem` package.
+
+The class [Client.java](https://github.com/selabhvl/dat110-project2-startcode/blob/master/src/no/hvl/dat110/client/Client.java) contains an implementation of the methods needed for implementing a client that can connect to the broker. The class Common.java contains the port number that can be used for connecting clients to the broker server.
 
 #### Sensor device implementation
 
 The skeleton of the sensor device implementation can be found in the `SensorDevice.java` class. You are required to
 complete the implementation such that the sensor device connects to a broker, runs in a loop `COUNT`-times where it publishes to a *temperature* topic. After that the sensor device should disconnect from the broker.
 
-#### Display device Implementation
+#### Display device implementation
 
 The skeleton of the display device implementation can be found in the `DisplayDevice.java` class. You are required to complete the implementation of the display device such that it connects to the same broker as the sensor device, creates a *temperature* topic, subscribes to this topic and then receives the same number of messages as the sensor device is sending on the topic. Upon completion, the display device should disconnect from the broker.
 
-Try to start a broker and have the display device and then the sensor device connect. Check that the display device is correctly receiving the temperature-messages published by the sensor device. The test in the package `no.hvl.dat110.iotsystem.tests` can be used to run the IoT system.
+#### Testing the IoT sensor-testing system
 
-### Task 4: ChApp - Chat application
+Try to start a broker and have the display device and then the sensor device connects. Check that the display device is correctly receiving the temperature-messages published by the sensor device.
+
+The test in the package `no.hvl.dat110.iotsystem.tests` can be used to run the IoT system. When running the test you should see output similar to:
+
+```
+IoT system starting ...
+Starting broker ...
+Broker server : 8080
+Dispatcher running
+.Broker running
+Broker accept [0]
+....Starting display ...
+Display starting ...
+.!0
+?
+Message [type=CONNECT, user=display]
+onConnect:Message [type=CONNECT, user=display]
+Client sessions:1
+Broker accept [0]
+.?
+CreateTopicMsg [topic=temperature]Message [type=CREATETOPIC, user=display]
+onCreateTopic:CreateTopicMsg [topic=temperature]Message [type=CREATETOPIC, user=display]
+Topic : 1
+.?
+SubscribeMsg [topic=temperature]Message [type=SUBSCRIBE, user=display]
+onSubscribe:SubscribeMsg [topic=temperature]Message [type=SUBSCRIBE, user=display]
+Subscribers : temperature : 1
+..Starting sensor ...
+temperature device started
+!0
+?
+READING: 2
+Message [type=CONNECT, user=temperaturesensor]
+onConnect:Message [type=CONNECT, user=temperaturesensor]
+Client sessions:2
+Broker accept [0]
+.?
+PublishMsg [topic=temperature, message=2]Message [type=PUBLISH, user=temperaturesensor]
+onPublish:PublishMsg [topic=temperature, message=2]Message [type=PUBLISH, user=temperaturesensor]
+DISPLAY: 2
+....READING: 20
+.?
+
+[ ... ]
+
+.Display stopping ...
+.?
+UnsubscribeMsg [topic=temperature]Message [type=UNSUBSCRIBE, user=display]
+onUnsubscribe:UnsubscribeMsg [topic=temperature]Message [type=UNSUBSCRIBE, user=display]
+Subscribers : temperature : 0
+.?
+Message [type=DISCONNECT, user=display]
+onDisconnect:Message [type=DISCONNECT, user=display]
+Client sessions:1
+.Temperature device stopping ...
+IoT system stopping ...
+```
+
+### Task D: ChApp - Chat social network  application
 
 The purpose of this task is to connect multiple JavaFX-based GUI clients to a broker, and in this way implement a short messaging system. The figure below show a screenshot of the client. The application client makes it possible to connect to a broker, create/delete topics, subscribe/unsubscribe to topics, and to publish messages on topics.
 
-![](assets/chapp.png)
+![](assets/chapp.png) 
 
-Clone the implementation of the client which is available as an Eclipse-project from here:
+Clone the implementation of the ChApp-client which is available as an Eclipse-project from here:
 
 https://github.com/selabhvl/dat110-project2-chapp.git
 
@@ -244,11 +312,13 @@ https://openjfx.io/openjfx-docs/
 
 For Java 8/9/10 JavaFX is included as part of JDK, but you may need to configure the build path of the project.
 
-In order to compile the client you will in addition have to add the project containing your implementation of the PB-MOM middelware to the build path of the project for the GUI client.
+In order to compile the client you will in addition have to add the project containing your implementation of the PB-MOM middleware to the build path of the project for the GUI client.
 
-Start a broker on one machine and let each group member run the ChApp-client on their machine. Try creating topics and then publish some messages. If you are not able to connect to the broker it may be due to firewall issues on the host running the broker. Make sure that the port on which the broker is running is not blocked by the firewall.
+Start by testing the system by running the broker and two clients on the same machine. The broker will run on the TCP/IP port specified in the class [BrokerServer.java](https://github.com/selabhvl/dat110-project2-startcode/blob/master/src/no/hvl/dat110/broker/BrokerServer.java) and you start the broker by running the main-method in this class. Try creating topics and then publish some messages.
 
-### Task 5: Message Buffering
+Next, start a broker on one machine and let each group member run the ChApp-client on their machine. If you are not able to connect to the broker it may be due to firewall issues on the host running the broker or the client. Make sure that the port on which the broker is running is not blocked by the firewall.
+
+### Task E: Message Buffering
 
 When a client disconnects from the broker, the corresponding `ClientSession-object` is removed from the storage. This means that if the client is subscribing to a topic and messages are published on that topic while the client is disconnected, then the client will not receive the published messages. If the client later reconnects, it will only receive those message that were published after the reconnect.
 
@@ -260,7 +330,7 @@ The aim of this task is to extend the implementation of the broker such that the
 
 You may use the ChApp-application to test the buffering implementation or alternatively write a unit test similar to the ones found in the `no.hvl.dat110.broker.processing.tests` package to create a scenario where a client (subscriber) disconnects for a while.
 
-### Task 6: Multi-threaded Broker
+### Task F: Multi-threaded Broker
 
 The implementation of the dispatcher in the `Dispatcher.java` class runs as a single `Stopable`-thread which in turn checks the current client sessions for incoming messages using the `hasData`-method. This means that it is not possible to exploit multiple-cores when running the broker, and this may degrade the performance of the broker as perceived by the clients.
 

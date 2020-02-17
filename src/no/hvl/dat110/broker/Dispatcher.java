@@ -3,6 +3,7 @@ package no.hvl.dat110.broker;
 import java.util.Set;
 import java.util.Collection;
 
+import no.hvl.dat110.common.TODO;
 import no.hvl.dat110.common.Logger;
 import no.hvl.dat110.common.Stopable;
 import no.hvl.dat110.messages.*;
@@ -109,7 +110,7 @@ public class Dispatcher extends Stopable {
 
 		// TODO: create the topic in the broker storage 
 		
-		throw new RuntimeException("not yet implemented");
+		throw new UnsupportedOperationException(TODO.method());
 
 	}
 
@@ -119,7 +120,7 @@ public class Dispatcher extends Stopable {
 
 		// TODO: delete the topic from the broker storage
 		
-		throw new RuntimeException("not yet implemented");
+		throw new UnsupportedOperationException(TODO.method());
 	}
 
 	public void onSubscribe(SubscribeMsg msg) {
@@ -128,7 +129,7 @@ public class Dispatcher extends Stopable {
 
 		// TODO: subscribe user to the topic
 		
-		throw new RuntimeException("not yet implemented");
+		throw new UnsupportedOperationException(TODO.method());
 		
 	}
 
@@ -138,8 +139,7 @@ public class Dispatcher extends Stopable {
 
 		// TODO: unsubscribe user to the topic
 		
-		throw new RuntimeException("not yet implemented");
-
+		throw new UnsupportedOperationException(TODO.method());
 	}
 
 	public void onPublish(PublishMsg msg) {
@@ -148,7 +148,7 @@ public class Dispatcher extends Stopable {
 
 		// TODO: publish the message to clients subscribed to the topic
 		
-		throw new RuntimeException("not yet implemented");
+		throw new UnsupportedOperationException(TODO.method());
 		
 	}
 }

@@ -1,6 +1,7 @@
 package no.hvl.dat110.iotsystem;
 
 import no.hvl.dat110.client.Client;
+import no.hvl.dat110.common.TODO;
 
 public class TemperatureDevice {
 	
@@ -16,7 +17,7 @@ public class TemperatureDevice {
 		
 		System.out.println("Temperature device stopping ... ");
 		
-		throw new RuntimeException("not yet implemented");
+		throw new UnsupportedOperationException(TODO.method());
 		
 	}
 }

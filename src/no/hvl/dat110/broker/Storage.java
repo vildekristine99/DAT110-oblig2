@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import no.hvl.dat110.common.TODO;
 import no.hvl.dat110.common.Logger;
 import no.hvl.dat110.messagetransport.Connection;
 
@@ -44,7 +45,7 @@ public class Storage {
 
 		// TODO: add corresponding client session to the storage
 		
-		throw new RuntimeException("not yet implemented");
+		throw new UnsupportedOperationException(TODO.method());
 		
 	}
 
@@ -52,7 +53,7 @@ public class Storage {
 
 		// TODO: remove client session for user from the storage
 
-		throw new RuntimeException("not yet implemented");
+		throw new UnsupportedOperationException(TODO.method());
 		
 	}
 
@@ -60,7 +61,7 @@ public class Storage {
 
 		// TODO: create topic in the storage
 
-		throw new RuntimeException("not yet implemented");
+		throw new UnsupportedOperationException(TODO.method());
 	
 	}
 
@@ -68,7 +69,7 @@ public class Storage {
 
 		// TODO: delete topic from the storage
 
-		throw new RuntimeException("not yet implemented");
+		throw new UnsupportedOperationException(TODO.method());
 		
 	}
 
@@ -76,7 +77,7 @@ public class Storage {
 
 		// TODO: add the user as subscriber to the topic
 		
-		throw new RuntimeException("not yet implemented");
+		throw new UnsupportedOperationException(TODO.method());
 		
 	}
 
@@ -84,6 +85,6 @@ public class Storage {
 
 		// TODO: remove the user as subscriber to the topic
 
-		throw new RuntimeException("not yet implemented");
+		throw new UnsupportedOperationException(TODO.method());
 	}
 }
