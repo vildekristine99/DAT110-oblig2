@@ -2,17 +2,21 @@
 
 ### Organisation
 
-Week 9 and 10 is devoted to project work which is to be undertaken in **groups of 2-4 students**. Discussions among the groups are allowed, but the code handed in by the group should be the work of the group members - and not members of other groups.
+Weeks 9 and 10 are devoted to project work which is to be undertaken in **groups of 2-4 students**. Discussions among the groups are allowed, but the code handed in by the group should be the work of the group members - and not members of other groups.
 
-There will be no lectures on Wednesday 26/2, but there will be labs at the normal time-slots. You also are encouraged to use the [discussion forum](https://hvl.instructure.com/courses/10943/discussion_topics/74045) in Canvas throughout the project week.
+There will be no lectures on Wednesday 26/2, but there will be labs at the normal time-slots in week 9. You are also encouraged to use the [discussion forum](https://hvl.instructure.com/courses/10943/discussion_topics/74045) in Canvas throughout the project weeks.
 
 ### Overview
 
-The aim of the project is to implement a publish-subscribe messaging-oriented middleware (PB-MOM) on top of the TCP-based message transport layer from project 1. You are **not** required to implement the messaging transport layer, but you are given an implementation as part of the start code. There should not be any need to directly use TCP/UDP transport services, only indirectly via the provided message transport service implementation.
+The aim of the project is to implement a publish-subscribe messaging-oriented middleware (PB-MOM) on top of the TCP-based message transport layer from project 1. You are **not** required to implement the messaging transport layer, but you are given an implementation if it as part of the start code. There should not be any need to directly use TCP/UDP transport services and socket programming, only indirectly via the provided message transport service implementation.
 
 You are assumed to have read Chapter 4 (Communication) in the distributed systems book and be familiar with the concepts of publisher clients, subscriber clients, topics, and brokers. You are also assumed to be familiar with the service provided by the message transport layer that we implemented as part of project 1.
 
-The client-side of the PB-MOM consists of *publishers and subscribers* that can create/delete topics, subscribe/unsubscribe to *topics*, and *publish* messages to topics. When a publisher publishes a message on a given topic, then all connected clients subscribing to the topic is to receive the message.
+The client-side of the PB-MOM consists of *publishers and subscribers* that can create/delete topics, subscribe/unsubscribe to *topics*, and *publish* messages to topics. When a publisher publishes a message on a given topic, then all currently connected clients subscribing to the topic is to receive the message.
+
+The figure below gives an overview of the PB-MOM that is to be implemented:
+
+**TODO: Figure**
 
 The server-side is comprised of a *broker* that manages the connected clients, topics and subscriptions, and which acts as an intermediate responsible for publishing messages to the subscribers of a given topic.  
 
@@ -22,15 +26,15 @@ The project is comprised of the following main tasks:
 
 2. Implement the storage of topics and subscriptions in the broker, and the processing of publish-subscribe messages received from connected clients.
 
-3. Application of the PB-MOM for implementing a small IoT system in which a sensor publishes the current temperature on a temperature topic to which a display is describing (see also lab-exercises from earlier weeks and project 1).
+3. Application of the PB-MOM for implementing a small IoT system in which a sensor publishes the current temperature on a temperature topic to which a display is subscribing (see also lab-exercises from earlier weeks and project 1).
 
-4. Experiment with PB-MOM for implementing the ChApp (Chat Social Network Application) where users can send short messages to each other via topics.
+4. Experiment with PB-MOM for implementing the ChApp (Chat Social Network Application) where users can send short messages to each other via topics similar to what is found in may social network applications.
 
 5. Extend the broker from being single-threaded to being multi-threaded having a thread for handling each connected client.
 
 6. Extend the broker such that if a subscribing client is currently disconnected and later reconnects, then the client will be provided with the messages that may have been published on the topic while the client was disconnected.
 
-**It is only required to do one of the tasks 5 and 6 - not both.**
+**It is only required to do one of the tasks E or F - and not both.**
 
 ### Getting Started
 
@@ -38,11 +42,11 @@ You should start by cloning the Java code which can be found in the github repos
 
 https://github.com/selabhvl/dat110-project2-startcode.git
 
-which contains an Eclipse-project with start-code. In addition, it also contains a number of unit tests which can be used for some basic testing of the implemented functionality. The unit-tests should not be modified/removed as they will be used for evaluation of the submitted solution.
+which contains an Eclipse-project with start-code.
 
 **NOTE** When opening the project in Eclipse, there will be some compile-errors. These will go away as you complete the implementation of the tasks below.
 
-In order for the group to use their own git-repository for the further work on the codebase, one member of the group must create an empty repository on github/bitbucket without a README file and without a `.gitignore` file, and then perform the following operations
+n order for the group to use their own git-repository for the further work on the codebase, one member of the group must create an empty repository on github/bitbucket without a README file and without a `.gitignore` file, and then perform the following operations
 
 `git remote remove origin`
 
@@ -52,7 +56,13 @@ In order for the group to use their own git-repository for the further work on t
 
 The other group members can now clone this new repository and work with a shared repository as usual.
 
-### Taks 1: Publish-subscribe Protocol Messages
+In addition, you should also clone the following project:
+
+https://github.com/selabhvl/dat110-project2-testing
+
+which contains a number of unit tests that can be used for some basic testing of the implemented functionality. These tests are by no means complete, and when running the test you should also check in the Eclipse console that no exceptions are raised when running the tests.
+
+### Task A: Publish-subscribe Protocol Messages
 
 The messages to be exchanged between the clients and the broker is to be defined as classes in the `no.hvl.dat110.messages` package. The base message class is `Message` and all message classes must be subclasses of this class. All messages will contain information about a `user` and have a `type` as defined in `MessageType.java`. The `user` is assumed to uniquely identify a connected client.
 
@@ -76,23 +86,67 @@ You are required to complete the implementation of the remaining message-classes
 
 - `PublishMsg.java` - sent by the client in order to publish a `message` (`String`) on a topic and sent by the broker in order to deliver the message to subscribed clients.
 
-The message-classes must have a constructor that can give a value to all object-variables, getter/setter methods for all object-variables, and they must implement a `toString`-method to be used for logging purposes.
+You must determine what object variables are needed in the classes. The message-classes must have a constructor that can give a value to all object-variables, getter/setter methods for all object-variables, and they must implement a `toString`-method to be used for logging purposes.
 
-### Task 2: Broker Implementation
+There are no tests available for testing your implementation of the message-classes, but the classes will be tested as part of the tests in Task B below.
 
-The implementation of the broker can be found in the `no.hvl.dat110.broker` package. You will have to study the code of the broker which is comprised of the following subclasses
+### Task B: Broker Implementation
+
+The implementation of the broker can be found in the `no.hvl.dat110.broker` package.
+
+You will have to study the code of the broker which is comprised of the following subclasses
 
 - `ClientSesssion.java` used to represent a *session* with a currently connected client on the broker side. Whenever a client (user) connects, a corresponding `ClientSession`-object will be created on the broker-side encapsulating the underlying message transport connection.
 
-- `Storage.java` which is to implement the storage of currently connected clients and manage the subscription of clients (users) to topics. **You will complete the implementation of this class in Task 2.1 below.**
+- `Storage.java` which is to implement the storage of currently connected clients and manage the subscription of clients (users) to topics. **You will complete the implementation of this class in Task B.1 below.**
 
 - `Broker.java` implementing a `Stopable`-thread abstraction. The `doProcess`-methods of the broker runs in a loop accepting incoming message transport connections (sessions) from clients.
 
-- `Dispatcher.java` implementing a `Stopable`-thread that is responsible for processing the messages received from clients. The `doProcess()`-methods of the dispatcher checks (polls) the client sessions for incoming messages and then invokes the `dispatcher`-method which, depending on the type of received message, will invoke the corresponding handler method. **You will complete the implementation of the dispatcher in Task 2.2 below.**
+- `Dispatcher.java` implementing a `Stopable`-thread that is responsible for processing the messages received from clients. The `doProcess()`-methods of the dispatcher checks (polls) the client sessions for incoming messages and then invokes the `dispatcher`-method which, depending on the type of received message, will invoke the corresponding handler method. **You will complete the implementation of the dispatcher in Task B.2 below.**
 
 - `BrokerServer.java` which contains the `main`-method of the broker. It is responsible for starting up the server and creating the storage and dispatcher of the broker.
 
-#### Task 2.1 Broker Storage
+The figure below gives an overview of the implementation of the `BrokerServer`. The `Broker` uses an underlying `MessagingServer` (from the messaging layer) to receive new message connections from clients. It then hands off these connections to the `Dispatcher` which is responsible for processing incoming messages on the connections using the information stored in the `Storage`.
+
+**TODO: Figure **
+
+Both the `Broker` and the `Dispatcher` runs as stopable-threads as implemented by the Stopable-class in Stopable.java:
+
+```java
+public abstract class Stopable extends Thread {
+
+	private boolean stop = false;
+	protected String name;
+
+	public Stopable(String name) {
+		this.name = name;
+	}
+
+	public synchronized void doStop() {
+		stop = true;
+	}
+
+	private synchronized boolean doCont() {
+		return !stop;
+	}
+
+	public abstract void doProcess();
+
+	public void run() {
+
+		Logger.log(name + " running");
+
+		while (doCont()) {
+			doProcess();		
+		}
+
+		Logger.log(name + " stopping");
+
+	}
+}
+```
+
+#### Task B.1 Broker Storage
 
 The `Storage`-class of the broker implements an in-memory storage where the broker can store information about connected clients and the subscription of user (clients) to topics. The start of the class is already provided:
 
@@ -129,7 +183,7 @@ You are required to complete the implementation of the following methods in the 
 
 The TODO-comments in `Storage.java` class provides more detailed information about what the individual methods are supposed to do. The package `no.hvl.dat110.broker.storage.tests` contains some basic unit tests that can be used to test the implementation of the storage methods.
 
-#### Task 2.2 Broker Message Processing
+#### Task B.2 Broker Message Processing
 
 All communication between the broker and the connected clients will be done via the `send`, `receive`, and `hasData`-methods of the corresponding `ClientSession`-object. The encapsulation of the underlying message transport connection has been already implemented in the `ClienSession.java` class
 
