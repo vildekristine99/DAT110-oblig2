@@ -108,7 +108,7 @@ You will have to study the code of the broker which is comprised of the followin
 
 The figure below gives an overview of the implementation of the `BrokerServer`. The `Broker` uses an underlying `MessagingServer` (from the messaging layer) to receive new message connections from clients. It then hands off these connections to the `Dispatcher` which is responsible for processing incoming messages on the connections using the information stored in the `Storage`.
 
-**TODO: Figure **
+**TODO: Figure**
 
 Both the `Broker` and the `Dispatcher` runs as Stopable-threads as implemented by the Stopable-class in Stopable.java:
 
@@ -217,7 +217,7 @@ The dispatcher contains an implementation of the `onConnect` and on `onDisconnec
 
 in order to be able to also process the remaining types of messages.
 
-The tests found in the `no.hvl.dat110.broker.processing.tests` package can be used to test the implemented methods.
+The tests found in the `no.hvl.dat110.broker.processing.tests` package can be used to test the implemented methods.**Please Note** that the tests in the package will have to be run one at a time as they are using the same TCP/IP port for the broker.
 
 ### Task C: IoT sensor-display application
 
@@ -300,25 +300,33 @@ IoT system stopping ...
 
 The purpose of this task is to connect multiple JavaFX-based GUI clients to a broker, and in this way implement a short messaging system. The figure below show a screenshot of the client. The application client makes it possible to connect to a broker, create/delete topics, subscribe/unsubscribe to topics, and to publish messages on topics.
 
-![](assets/chapp.png) 
+![](assets/chapp.png)
+
+A demonstration of the application can be found here: https://www.youtube.com/watch?v=qGibmzlm0x0&feature=youtu.be
+
+#### Task D.1 Setup JavaFX and PB-MOM
 
 Clone the implementation of the ChApp-client which is available as an Eclipse-project from here:
 
 https://github.com/selabhvl/dat110-project2-chapp.git
 
-If using the Java 11 SDK (or later), then you will have to download JavaFX for your platform and then configure the project as describe here:
+If using Java 11 SDK (or later), then you will have to download JavaFX for your platform and then configure the project. For Java 8/9/10 JavaFX is included as part of JDK.
 
-https://openjfx.io/openjfx-docs/
+1. Download the 11.0.2 distribution from https://gluonhq.com/products/javafx/ (remember to download for the correct platform - Mac/Linux/Windows)
 
-For Java 8/9/10 JavaFX is included as part of JDK, but you may need to configure the build path of the project.
+2. Follow the instructions for JavaFX and Eclipse for non-modular projects: https://openjfx.io/openjfx-docs/#install-javafx (except that you do not need to create a new project as you already have the dat110-project2-chapp project). The main class for the launch configuration is `no.hvl.dat110.chapp.Chapp`
 
-In order to compile the client you will in addition have to add the project containing your implementation of the PB-MOM middleware to the build path of the project for the GUI client.
+3. In order to compile the chatapp client you will in addition have to add the Eclipse project containing your implementation of the PB-MOM middleware to the Build Path of the project for the chat application GUI client.
+
+#### Task D.2 Running the chat application
 
 Start by testing the system by running the broker and two clients on the same machine. The broker will run on the TCP/IP port specified in the class [BrokerServer.java](https://github.com/selabhvl/dat110-project2-startcode/blob/master/src/no/hvl/dat110/broker/BrokerServer.java) and you start the broker by running the main-method in this class. Try creating topics and then publish some messages.
 
 Next, start a broker on one machine and let each group member run the ChApp-client on their machine. If you are not able to connect to the broker it may be due to firewall issues on the host running the broker or the client. Make sure that the port on which the broker is running is not blocked by the firewall.
 
 ### Task E: Message Buffering
+
+**Please not that you only need to do either task E or Task F - both both.**
 
 When a client disconnects from the broker, the corresponding `ClientSession-object` is removed from the storage. This means that if the client is subscribing to a topic and messages are published on that topic while the client is disconnected, then the client will not receive the published messages. If the client later reconnects, it will only receive those message that were published after the reconnect.
 
@@ -328,9 +336,11 @@ The aim of this task is to extend the implementation of the broker such that the
 - augmenting the broker storage such that buffering of messages for the clients becomes possible.
 - changing the implementation of how a connect from a client is handled by the dispatcher.    
 
-You may use the ChApp-application to test the buffering implementation or alternatively write a unit test similar to the ones found in the `no.hvl.dat110.broker.processing.tests` package to create a scenario where a client (subscriber) disconnects for a while.
+You may use the ChApp-application to test the buffering implementation or alternatively write a unit test similar to the ones found in the `no.hvl.dat110.broker.processing.tests` package to create a scenario where a client (subscriber) disconnects for a while and then reconnects.
 
 ### Task F: Multi-threaded Broker
+
+**Please not that you only need to do either task E or Task F - both both.**
 
 The implementation of the dispatcher in the `Dispatcher.java` class runs as a single `Stopable`-thread which in turn checks the current client sessions for incoming messages using the `hasData`-method. This means that it is not possible to exploit multiple-cores when running the broker, and this may degrade the performance of the broker as perceived by the clients.
 
@@ -340,7 +350,7 @@ Solving this task means that a new thread has to be spawned whenever a client co
 
 ### Handing in the project
 
-Each group must hand in a link on Canvas to a git-repository containing their implementation. You should keep the unit-test in the project as they are as we will use these for testing your implementation.
+Each group must hand in a link on Canvas to a git-repository containing their implementation.
 
 Please remember to hand-in as a member of a group in Canvas: https://hvl365-my.sharepoint.com/:w:/g/personal/akv_hvl_no/EdkQXNKVjmhPrHNtD3n5r74B6KSb7DwmVYf9MA3SIUA4Sw?e=hC5Q9i
 
