@@ -16,7 +16,7 @@ The client-side of the PB-MOM consists of *publishers and subscribers* that can 
 
 The figure below gives an overview of the PB-MOM that is to be implemented:
 
-**TODO: Figure**
+![](assets/markdown-img-paste-20200218140925961.jpg)
 
 The server-side is comprised of a *broker* that manages the connected clients, topics and subscriptions, and which acts as an intermediate responsible for publishing messages to the subscribers of a given topic.  
 
@@ -108,7 +108,7 @@ You will have to study the code of the broker which is comprised of the followin
 
 The figure below gives an overview of the implementation of the `BrokerServer`. The `Broker` uses an underlying `MessagingServer` (from the messaging layer) to receive new message connections from clients. It then hands off these connections to the `Dispatcher` which is responsible for processing incoming messages on the connections using the information stored in the `Storage`.
 
-**TODO: Figure**
+![](assets/markdown-img-paste-20200218140610451.jpg)
 
 Both the `Broker` and the `Dispatcher` runs as Stopable-threads as implemented by the Stopable-class in Stopable.java:
 
@@ -165,9 +165,9 @@ public class Storage {
 
 The basic idea is to use a hash-map mapping from topics (`String`) to a set of users (`String`) for managing which users are subscribed to which topics. Similarly, the currently connected clients are stored in a hash-map mapping from a user (`String`) to a `ClientSession`-object representing the connection/session with the client.
 
-The broker data model is illustrated below
+The broker data model for the storage is illustrated below
 
-**TODO Figure **
+![](assets/markdown-img-paste-20200218140526335.jpg)
 
 You are required to complete the implementation of the following methods in [Storage.java]( https://github.com/selabhvl/dat110-project2-startcode/blob/master/src/no/hvl/dat110/broker/Storage.java)
 
@@ -226,6 +226,10 @@ In this task you will use the PB-MOM middleware to implement a small IoT system 
 The start of the implementation of the IoT-system can be found in the `no.hvl.dat110.iotsystem` package.
 
 The class [Client.java](https://github.com/selabhvl/dat110-project2-startcode/blob/master/src/no/hvl/dat110/client/Client.java) contains an implementation of the methods needed for implementing a client that can connect to the broker. The class Common.java contains the port number that can be used for connecting clients to the broker server.
+
+The principle of the sensor-display application is shown below
+
+![](assets/markdown-img-paste-2020021814081969.jpg)
 
 #### Sensor device implementation
 
@@ -300,6 +304,12 @@ IoT system stopping ...
 
 The purpose of this task is to connect multiple JavaFX-based GUI clients to a broker, and in this way implement a short messaging system. The figure below show a screenshot of the client. The application client makes it possible to connect to a broker, create/delete topics, subscribe/unsubscribe to topics, and to publish messages on topics.
 
+The architecture of the chat application system is shown below
+
+![](assets/markdown-img-paste-20200218140706585.jpg)
+
+and the GUI of the chat application client is the following
+
 ![](assets/chapp.png)
 
 A demonstration of the application can be found here: https://www.youtube.com/watch?v=qGibmzlm0x0&feature=youtu.be
@@ -353,6 +363,3 @@ Solving this task means that a new thread has to be spawned whenever a client co
 Each group must hand in a link on Canvas to a git-repository containing their implementation.
 
 Please remember to hand-in as a member of a group in Canvas: https://hvl365-my.sharepoint.com/:w:/g/personal/akv_hvl_no/EdkQXNKVjmhPrHNtD3n5r74B6KSb7DwmVYf9MA3SIUA4Sw?e=hC5Q9i
-
-### Possible high-level architectural diagram
-![](assets/project2-diagram.png)
