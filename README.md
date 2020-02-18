@@ -22,17 +22,17 @@ The server-side is comprised of a *broker* that manages the connected clients, t
 
 The project is comprised of the following main tasks:
 
-1. Implement classes for the messages to be used in the publish-subscribe protocol between clients and the broker.
+**Task A.** Implement classes for the messages to be used in the publish-subscribe protocol between clients and the broker.
 
-2. Implement the storage of topics and subscriptions in the broker, and the processing of publish-subscribe messages received from connected clients.
+**Task B.** Implement the storage of topics and subscriptions in the broker, and the processing of publish-subscribe messages received from connected clients.
 
-3. Application of the PB-MOM for implementing a small IoT system in which a sensor publishes the current temperature on a temperature topic to which a display is subscribing (see also lab-exercises from earlier weeks and project 1).
+**Task C.** Application of the PB-MOM for implementing a small IoT system in which a sensor publishes the current temperature on a temperature topic to which a display is subscribing (see also lab-exercises from earlier weeks and project 1).
 
-4. Experiment with PB-MOM for implementing the ChApp (Chat Social Network Application) where users can send short messages to each other via topics similar to what is found in may social network applications.
+**Task D.** Experiment with PB-MOM for implementing the ChApp (Chat Social Network Application) where users can send short messages to each other via topics similar to what is found in may social network applications.
 
-5. Extend the broker from being single-threaded to being multi-threaded having a thread for handling each connected client.
+**Task E.** Extend the broker such that if a subscribing client is currently disconnected and later reconnects, then the client will be provided with the messages that may have been published on the topic while the client was disconnected.
 
-6. Extend the broker such that if a subscribing client is currently disconnected and later reconnects, then the client will be provided with the messages that may have been published on the topic while the client was disconnected.
+**Task F.** Extend the broker from being single-threaded to being multi-threaded having a thread for handling each connected client.
 
 **It is only required to do one of the tasks E or F - and not both.**
 
