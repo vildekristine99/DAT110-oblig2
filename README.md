@@ -112,7 +112,7 @@ The figure below gives an overview of the implementation of the `BrokerServer`. 
 
 ![](assets/markdown-img-paste-20200218140610451.jpg)
 
-Both the `Broker` and the `Dispatcher` runs as Stopable-threads as implemented by the Stopable-class in Stopable.java:
+Both the *Broker* and the *Dispatcher* runs as Stopable-threads as implemented by the Stopable-class in `Stopable.java`:
 
 ```java
 public abstract class Stopable extends Thread {
@@ -147,6 +147,8 @@ public abstract class Stopable extends Thread {
 	}
 }
 ```
+
+The classes `StopableExample.java` and `StopableExampleMain.java` contains an example of use of Stopable-thread abstraction.
 
 #### Task B.1 Broker Storage
 
