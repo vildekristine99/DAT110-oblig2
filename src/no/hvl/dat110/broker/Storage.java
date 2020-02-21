@@ -10,7 +10,13 @@ import no.hvl.dat110.messagetransport.Connection;
 
 public class Storage {
 
+	// data structure for managing subscriptions
+	// maps from user to set of topics subscribed to by user
 	protected ConcurrentHashMap<String, Set<String>> subscriptions;
+	
+	// data structure for managing currently connected clients
+	// maps from user to corresponding client session object
+	
 	protected ConcurrentHashMap<String, ClientSession> clients;
 
 	public Storage() {
@@ -28,6 +34,9 @@ public class Storage {
 
 	}
 
+	// get the session object for a given user
+	// session object can be used to send a message to the user
+	
 	public ClientSession getSession(String user) {
 
 		ClientSession session = clients.get(user);

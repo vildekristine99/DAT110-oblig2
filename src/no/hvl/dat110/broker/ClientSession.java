@@ -7,6 +7,8 @@ import no.hvl.dat110.messagetransport.Connection;
 public class ClientSession {
 
 	private String user;
+	
+	// underlying message transport connection
 	private Connection connection;
 
 	public ClientSession(String user, Connection connection) {
@@ -35,6 +37,7 @@ public class ClientSession {
 		MessageUtils.send(connection, message);
 	}
 
+	// check whether there is some message on the connection
 	public boolean hasData() {
 
 		return connection.hasData();

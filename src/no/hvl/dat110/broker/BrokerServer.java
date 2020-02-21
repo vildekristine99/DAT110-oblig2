@@ -22,9 +22,11 @@ public class BrokerServer extends Thread {
 		Dispatcher dispatcher = new Dispatcher(storage);
 		Broker broker = new Broker(dispatcher,port);
 		
+		// start dispatcher and broker threads
 		dispatcher.start();
 		broker.start();
 		
+		// wait for termination of dispatcher and broker threads before stopping broker server
 		try {
 			broker.join();
 			dispatcher.join();
@@ -32,7 +34,7 @@ public class BrokerServer extends Thread {
 			e.printStackTrace();
 		}
 		
-		Logger.log("Broker stopping ... ");
+		Logger.log("Broker server stopping ... ");
 		
 	}
 

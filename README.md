@@ -98,17 +98,17 @@ The implementation of the broker can be found in the `no.hvl.dat110.broker` pack
 
 You will have to study the code of the broker which is comprised of the following subclasses
 
-- `ClientSesssion.java` used to represent a *session* with a currently connected client on the broker side. Whenever a client (user) connects, a corresponding `ClientSession`-object will be created on the broker-side encapsulating the underlying message transport connection.
+- `ClientSesssion.java` used to represent a *session* with a currently connected client on the broker side. Whenever a client (user) connects, a corresponding `ClientSession`-object will be created on the broker-side representing the underlying message transport connection. The methods in this class must be used when the broker is to receive and send messages to a connected client.
 
 - `Storage.java` which is to implement the storage of currently connected clients and manage the subscription of clients (users) to topics. **You will complete the implementation of this class in Task B.1 below.**
 
 - `Broker.java` implementing a `Stopable`-thread abstraction. The `doProcess`-methods of the broker runs in a loop accepting incoming message transport connections (sessions) from clients.
 
-- `Dispatcher.java` implementing a `Stopable`-thread that is responsible for processing the messages received from clients. The `doProcess()`-methods of the dispatcher checks (polls) the client sessions for incoming messages and then invokes the `dispatcher`-method which, depending on the type of received message, will invoke the corresponding handler method. **You will complete the implementation of the dispatcher in Task B.2 below.**
+- `Dispatcher.java` implementing a `Stopable`-thread that is responsible for processing the messages received from clients. The `doProcess()`-methods of the dispatcher in turn checks (polls) the client sessions for incoming messages and then invokes the `dispatcher`-method which, depending on the type of received message, will invoke the corresponding handler method. **You will complete the implementation of the dispatcher in Task B.2 below.**
 
 - `BrokerServer.java` which contains the `main`-method of the broker. It is responsible for starting up the server and creating the storage and dispatcher of the broker.
 
-The figure below gives an overview of the implementation of the `BrokerServer`. The `Broker` uses an underlying `MessagingServer` (from the messaging layer) to receive new message connections from clients. It then hands off these connections to the `Dispatcher` which is responsible for processing incoming messages on the connections using the information stored in the `Storage`.
+The figure below gives an overview of the implementation of the `BrokerServer`. The `Broker` uses an underlying `MessagingServer` (from the messaging layer) to accept new message connections from clients. It then hands off these connections to the `Dispatcher` which is responsible for processing incoming messages on the connections using the information stored in the `Storage`.
 
 ![](assets/markdown-img-paste-20200218140610451.jpg)
 
@@ -189,7 +189,7 @@ You are required to complete the implementation of the following methods in [Sto
 
 The TODO-comments in `Storage.java` class provides more detailed information about what the individual methods are supposed to do.
 
-The package `no.hvl.dat110.broker.storage.tests` in the `dat110-prosject2-testing' project contains some basic unit tests that can be used to test the implementation of the storage methods.
+The package `no.hvl.dat110.broker.storage.tests` in the `dat110-prosject2-testing` project contains some basic unit tests that can be used to test the implementation of the storage methods.
 
 #### Task B.2 Broker Dispatcher for Message Processing
 

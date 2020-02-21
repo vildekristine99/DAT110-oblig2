@@ -33,6 +33,7 @@ public class Dispatcher extends Stopable {
 				msg = client.receive();
 			}
 
+			// a message was received
 			if (msg != null) {
 				dispatch(client, msg);
 			}
@@ -49,6 +50,7 @@ public class Dispatcher extends Stopable {
 
 		MessageType type = msg.getType();
 
+		// invoke the appropriate handler method
 		switch (type) {
 
 		case DISCONNECT:
@@ -93,7 +95,7 @@ public class Dispatcher extends Stopable {
 
 	}
 
-	// called by dispatch upon receiving a disconnect message 
+	// called by dispatch upon receiving a disconnect message
 	public void onDisconnect(DisconnectMsg msg) {
 
 		String user = msg.getUser();
@@ -108,8 +110,9 @@ public class Dispatcher extends Stopable {
 
 		Logger.log("onCreateTopic:" + msg.toString());
 
-		// TODO: create the topic in the broker storage 
-		
+		// TODO: create the topic in the broker storage
+		// the topic is contained in the create topic message
+
 		throw new UnsupportedOperationException(TODO.method());
 
 	}
@@ -119,6 +122,7 @@ public class Dispatcher extends Stopable {
 		Logger.log("onDeleteTopic:" + msg.toString());
 
 		// TODO: delete the topic from the broker storage
+		// the topic is contained in the delete topic message
 		
 		throw new UnsupportedOperationException(TODO.method());
 	}
@@ -128,9 +132,10 @@ public class Dispatcher extends Stopable {
 		Logger.log("onSubscribe:" + msg.toString());
 
 		// TODO: subscribe user to the topic
+		// user and topic is contained in the subscribe message
 		
 		throw new UnsupportedOperationException(TODO.method());
-		
+
 	}
 
 	public void onUnsubscribe(UnsubscribeMsg msg) {
@@ -138,6 +143,7 @@ public class Dispatcher extends Stopable {
 		Logger.log("onUnsubscribe:" + msg.toString());
 
 		// TODO: unsubscribe user to the topic
+		// user and topic is contained in the unsubscribe message
 		
 		throw new UnsupportedOperationException(TODO.method());
 	}
@@ -147,8 +153,10 @@ public class Dispatcher extends Stopable {
 		Logger.log("onPublish:" + msg.toString());
 
 		// TODO: publish the message to clients subscribed to the topic
+		// topic and message is contained in the subscribe message
+		// messages must be sent used the corresponding client session objects
 		
 		throw new UnsupportedOperationException(TODO.method());
-		
+
 	}
 }
