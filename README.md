@@ -72,13 +72,13 @@ The communication between the client and the broker is to be based on the messag
 
 The `no.hvl.dat110.messages` already contains classes implementing the following messages for the publish-subscribe protocol:
 
-- `ConnectMsg.java` - sent by the client as the first message after having established the underlying message transport connection to the broker.
+- [`ConnectMsg.java`](https://github.com/selabhvl/dat110-project2-startcode/blob/master/src/no/hvl/dat110/messages/ConnectMsg.java) - sent by the client as the first message after having established the underlying message transport connection to the broker.
 
 - `DisconnectMsg.java` - sent from the client in order to disconnect from the broker.
 
 You are required to complete the implementation of the remaining message-classes.
 
-- `CreateTopicMsg.java` - sent by the client in order to have the broker create a `topic`. A topic is to be identified by means of a `String`
+- [`CreateTopicMsg.java`](https://github.com/selabhvl/dat110-project2-startcode/blob/master/src/no/hvl/dat110/messages/CreateTopicMsg.java) - sent by the client in order to have the broker create a `topic`. A topic is to be identified by means of a `String`
 
 - `DeleteTopicMsg.java` - sent by the client in order to have a `topic` deleted.
 
@@ -94,25 +94,23 @@ There are no tests available for testing your implementation of the message-clas
 
 ### Task B: Broker Implementation
 
-The implementation of the broker can be found in the `no.hvl.dat110.broker` package.
+The figure below gives an overview of the implementation of the broker server. The `Broker` uses an underlying `MessagingServer` (from the messaging layer) to accept new message connections from clients. It then hands off these connections to the `Dispatcher` which is responsible for processing incoming messages on the connections using the information stored in the `Storage`.
 
-You will have to study the code of the broker which is comprised of the following subclasses
+![](assets/markdown-img-paste-20200218140610451.jpg)
 
-- `ClientSesssion.java` used to represent a *session* with a currently connected client on the broker side. Whenever a client (user) connects, a corresponding `ClientSession`-object will be created on the broker-side representing the underlying message transport connection. The methods in this class must be used when the broker is to receive and send messages to a connected client.
+The implementation of the broker can be found in the `no.hvl.dat110.broker` package. You will have to study the code of the broker which is comprised of the following subclasses
+
+- [`ClientSesssion.java`](https://github.com/selabhvl/dat110-project2-startcode/blob/master/src/no/hvl/dat110/broker/ClientSession.java) used to represent a *session* with a currently connected client on the broker side. Whenever a client (user) connects, a corresponding `ClientSession`-object will be created on the broker-side representing the underlying message transport connection. The methods in this class must be used when the broker is to receive and send messages to a connected client.
 
 - `Storage.java` which is to implement the storage of currently connected clients and manage the subscription of clients (users) to topics. **You will complete the implementation of this class in Task B.1 below.**
+
+- `BrokerServer.java` which contains the `main`-method of the broker. It is responsible for starting up the server and creating the storage and dispatcher of the broker.
 
 - `Broker.java` implementing a `Stopable`-thread abstraction. The `doProcess`-methods of the broker runs in a loop accepting incoming message transport connections (sessions) from clients.
 
 - `Dispatcher.java` implementing a `Stopable`-thread that is responsible for processing the messages received from clients. The `doProcess()`-methods of the dispatcher in turn checks (polls) the client sessions for incoming messages and then invokes the `dispatcher`-method which, depending on the type of received message, will invoke the corresponding handler method. **You will complete the implementation of the dispatcher in Task B.2 below.**
 
-- `BrokerServer.java` which contains the `main`-method of the broker. It is responsible for starting up the server and creating the storage and dispatcher of the broker.
-
-The figure below gives an overview of the implementation of the `BrokerServer`. The `Broker` uses an underlying `MessagingServer` (from the messaging layer) to accept new message connections from clients. It then hands off these connections to the `Dispatcher` which is responsible for processing incoming messages on the connections using the information stored in the `Storage`.
-
-![](assets/markdown-img-paste-20200218140610451.jpg)
-
-Both the *Broker* and the *Dispatcher* runs as Stopable-threads as implemented by the Stopable-class in `Stopable.java`:
+Both the *Broker* and the *Dispatcher* runs as Stopable-threads as implemented by the Stopable-class in [`Stopable.java`](https://github.com/selabhvl/dat110-project2-startcode/blob/master/src/no/hvl/dat110/common/Stopable.java):
 
 ```java
 public abstract class Stopable extends Thread {
@@ -147,12 +145,10 @@ public abstract class Stopable extends Thread {
 	}
 }
 ```
-
 The classes `StopableExample.java` and `StopableExampleMain.java` contains an example of use of Stopable-thread abstraction.
-
 #### Task B.1 Broker Storage
 
-The `Storage`-class of the broker implements an in-memory storage where the broker can store information about connected clients and the subscription of user (clients) to topics. The start of the class is already provided:
+The class [`Storage.java`](https://github.com/selabhvl/dat110-project2-startcode/blob/master/src/no/hvl/dat110/broker/Storage.java) of the broker implements an in-memory storage where the broker can store information about connected clients and the subscription of user (clients) to topics. The start of the class is already provided:
 
 ```java
 public class Storage {
@@ -306,7 +302,9 @@ IoT system stopping ...
 
 ### Task D: ChApp - Chat social network  application
 
-The purpose of this task is to connect multiple JavaFX-based GUI clients to a broker, and in this way implement a short messaging system.  The key point is to demonstrate how the publish-subscribe middleware implemented in tasks A and B can be used for very different applications. The architecture of the chat application system is shown below.
+The purpose of this task is to connect multiple JavaFX-based GUI clients to a broker, and in this way implement a short messaging system.  The key point is to demonstrate how the publish-subscribe middleware implemented in tasks A and B can be used for very different applications.
+
+The architecture of the chat application system is shown below.
 
 ![](assets/markdown-img-paste-20200218140706585.jpg)
 
@@ -315,6 +313,8 @@ The figure below show a screenshot of the client GUI. The chat application clien
 ![](assets/chapp.png)
 
 A video-demonstration of the application can be found here: https://www.youtube.com/watch?v=qGibmzlm0x0&feature=youtu.be
+
+In this task you are not to implement anything, you just need to integrate the chat application client and the middleware from Tasks A and B.
 
 #### Task D.1 Setup JavaFX and PB-MOM
 
@@ -340,7 +340,7 @@ If you are not able to connect to the broker it may be due to firewall issues on
 
 ### Task E: Message Buffering
 
-**Please note that you only need to do either task E or Task F - both both. Task E is presumeable easier than Task F**
+**Please note that you only need to do either task E or Task F - both both. Task E is most likely easier than Task F**
 
 When a client disconnects from the broker, the corresponding `ClientSession-object` is removed from the storage. This means that if the client is subscribing to a topic and messages are published on that topic while the client is disconnected, then the client will not receive the published messages. If the client later reconnects, it will only receive those message that were published after the reconnect.
 
