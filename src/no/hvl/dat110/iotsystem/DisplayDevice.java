@@ -15,6 +15,15 @@ public class DisplayDevice {
 		
 		// TODO - START
 				
+		// create a client object and use it to
+		
+		// - connect to the broker
+		// - create the temperature topic on the broker
+		// - subscribe to the topic
+		// - receive messages on the topic
+		// - unsubscribe from the topic
+		// - disconnect from the broker
+		
 		// TODO - END
 		
 		System.out.println("Display stopping ... ");

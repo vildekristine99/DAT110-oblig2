@@ -229,7 +229,7 @@ In this task you will use the PB-MOM middleware to implement a small IoT system 
 
 The start of the implementation of the IoT-system can be found in the `no.hvl.dat110.iotsystem` package.
 
-The class [Client.java](https://github.com/selabhvl/dat110-project2-startcode/blob/master/src/no/hvl/dat110/client/Client.java) contains an implementation of the methods needed for implementing a client that can connect to the broker. The class Common.java contains the port number that can be used for connecting clients to the broker server.
+The class [Client.java](https://github.com/selabhvl/dat110-project2-startcode/blob/master/src/no/hvl/dat110/client/Client.java) contains an implementation of the methods needed for implementing the sensor and display clients that can connect to the broker. The class Common.java contains the port number that can be used for connecting clients to the broker server.
 
 The principle of the sensor-display application is shown below
 
@@ -306,17 +306,15 @@ IoT system stopping ...
 
 ### Task D: ChApp - Chat social network  application
 
-The purpose of this task is to connect multiple JavaFX-based GUI clients to a broker, and in this way implement a short messaging system. The figure below show a screenshot of the client. The application client makes it possible to connect to a broker, create/delete topics, subscribe/unsubscribe to topics, and to publish messages on topics.
-
-The architecture of the chat application system is shown below
+The purpose of this task is to connect multiple JavaFX-based GUI clients to a broker, and in this way implement a short messaging system.  The key point is to demonstrate how the publish-subscribe middleware implemented in tasks A and B can be used for very different applications. The architecture of the chat application system is shown below.
 
 ![](assets/markdown-img-paste-20200218140706585.jpg)
 
-and the GUI of the chat application client is the following
+The figure below show a screenshot of the client GUI. The chat application client makes it possible to connect to a broker, create/delete topics, subscribe/unsubscribe to topics, and to publish messages on topics.
 
 ![](assets/chapp.png)
 
-A demonstration of the application can be found here: https://www.youtube.com/watch?v=qGibmzlm0x0&feature=youtu.be
+A video-demonstration of the application can be found here: https://www.youtube.com/watch?v=qGibmzlm0x0&feature=youtu.be
 
 #### Task D.1 Setup JavaFX and PB-MOM
 
@@ -328,29 +326,31 @@ If using Java 11 SDK (or later), then you will have to download JavaFX for your 
 
 1. Download the 11.0.2 distribution from https://gluonhq.com/products/javafx/ (remember to download for the correct platform - Mac/Linux/Windows)
 
-2. Follow the instructions for JavaFX and Eclipse for non-modular projects: https://openjfx.io/openjfx-docs/#install-javafx (except that you do not need to create a new project as you already have the dat110-project2-chapp project). The main class for the launch configuration is `no.hvl.dat110.chapp.Chapp`
+2. Follow the instructions for JavaFX and Eclipse and non-modular projects: https://openjfx.io/openjfx-docs/#install-javafx (except that you do not need to create a new project as you already have the dat110-project2-chapp project). The main class for the launch configuration is `no.hvl.dat110.chapp.Chapp`
 
-3. In order to compile the chatapp client you will in addition have to add the Eclipse project containing your implementation of the PB-MOM middleware to the Build Path of the project for the chat application GUI client.
+3. In order to compile the chatapp client you *may* in addition have to add the Eclipse project containing your implementation of the PB-MOM middleware to the Build Path of the project for the chat application GUI client.
 
 #### Task D.2 Running the chat application
 
-Start by testing the system by running the broker and two clients on the same machine. The broker will run on the TCP/IP port specified in the class [BrokerServer.java](https://github.com/selabhvl/dat110-project2-startcode/blob/master/src/no/hvl/dat110/broker/BrokerServer.java) and you start the broker by running the main-method in this class. Try creating topics and then publish some messages.
+Start by testing the system by running the broker and two clients on the same machine. The broker will run on the TCP/IP port specified in the class [BrokerServer.java](https://github.com/selabhvl/dat110-project2-startcode/blob/master/src/no/hvl/dat110/broker/BrokerServer.java) and you start the broker server by running the main-method in this class. Try creating topics and then publish some messages.
 
-Next, start a broker on one machine and let each group member run the ChApp-client on their machine. If you are not able to connect to the broker it may be due to firewall issues on the host running the broker or the client. Make sure that the port on which the broker is running is not blocked by the firewall.
+Next, start a broker on one machine and let each group member run the ChApp-client on their machine. Remeber to use the Configure menu-item in the chat application to correctly set the IP address and port number of the broker.
+
+If you are not able to connect to the broker it may be due to firewall issues on the host running the broker or the client. Make sure that the port on which the broker is running is not blocked by the firewall.
 
 ### Task E: Message Buffering
 
-**Please not that you only need to do either task E or Task F - both both.**
+**Please note that you only need to do either task E or Task F - both both. Task E is presumeable easier than Task F**
 
 When a client disconnects from the broker, the corresponding `ClientSession-object` is removed from the storage. This means that if the client is subscribing to a topic and messages are published on that topic while the client is disconnected, then the client will not receive the published messages. If the client later reconnects, it will only receive those message that were published after the reconnect.
 
 The aim of this task is to extend the implementation of the broker such that the broker will buffer any messages for a subscribed client until the point where the client connects again. At that point, the broker should then publish the buffered message to the client. Implementing this extension will involve  
 
-- changing the implementation of how a disconnect-message from the client is processed by the dispatcher.
-- augmenting the broker storage such that buffering of messages for the clients becomes possible.
-- changing the implementation of how a connect from a client is handled by the dispatcher.    
+- augmenting the broker storage such that buffering of messages for the clients becomes possible. **Hint:** you will need an additional hash-map in Storage.java to store a set of messages for a user that is currently disconnected.
+- changing the implementation of how a connect from a client is handled by the dispatcher.**Hint:** you will have to send any buffered messages to the connecting client.  
+- changing the implementation of how a publish from the client is processed by the dispatcher.**Hint:** if a subscribing client is currently disconnected (does not have a session), then the message will have to be buffered
 
-You may use the ChApp-application to test the buffering implementation or alternatively write a unit test similar to the ones found in the `no.hvl.dat110.broker.processing.tests` package to create a scenario where a client (subscriber) disconnects for a while and then reconnects.
+You may use the ChApp-application or a revised version of the IoT-system to test the buffering implementation; or alternatively write a unit test similar to the ones found in the `no.hvl.dat110.broker.processing.tests` package to create a scenario where a client (subscriber) disconnects for a while and then reconnects.
 
 ### Task F: Multi-threaded Broker
 
@@ -360,7 +360,14 @@ The implementation of the dispatcher in the `Dispatcher.java` class runs as a si
 
 The aim of this task is to change the implementation of the dispatcher such that each client session has an associated thread which processes the incoming message from the corresponding client.
 
-Solving this task means that a new thread has to be spawned whenever a client connects. This thread will then wait for incoming messages from the client and handles these accordingly. When the client disconnect the corresponding thread should be terminated. It should also be possible to stop/terminate the execution of all current threads. In the current implementation, the single threaded dispatcher can be stopped by invoking the `doStop`-method on the dispatcher.
+Adressing this task involves:
+
+- creating a new dispatcher-thread in the broker whenever a client connects, i.e., the `waitConnect`-methods in the broker is executed.
+- a dispatcher thread will then wait for incoming messages from the client and handles these accordingly (as before). This means that the doProcess-methods of the dispatcher no longer should iterative across all client-sessions since each dispatcher-thread handles on client.
+- When a client disconnects, i.e, the `onDisconnect`-methods in the dispatcher is invoked, then the corresponding dispatcher thread should be terminated using `doStop()`
+
+It should also be possible to stop/terminate the execution of all current dispatcher-threads. In the current implementation, the single threaded dispatcher can be stopped by invoking the `doStop`-method on the dispatcher.
+
 
 ### Handing in the project
 
