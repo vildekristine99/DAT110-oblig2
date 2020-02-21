@@ -8,7 +8,9 @@ There will be no lectures on Wednesday 26/2, but there will be labs at the norma
 
 ### Overview
 
-The aim of the project is to implement a publish-subscribe messaging-oriented middleware (PB-MOM) on top of the TCP-based message transport layer from project 1. You are **not** required to implement the messaging transport layer, but you are given an implementation if it as part of the start code. There should not be any need to directly use TCP/UDP transport services and socket programming, only indirectly via the provided message transport service implementation.
+The aim of the project is to implement a publish-subscribe messaging-oriented middleware (PB-MOM) on top of the TCP-based message transport layer from project 1.
+
+You are **not** required to implement the messaging transport layer, but you are given an implementation if it as part of the start code. There should not be any need to directly use TCP/UDP transport services and socket programming, only indirectly via the provided message transport service implementation.
 
 You are assumed to have read Chapter 4 (Communication) in the distributed systems book and be familiar with the concepts of publisher clients, subscriber clients, topics, and brokers. You are also assumed to be familiar with the service provided by the message transport layer that we implemented as part of project 1.
 
@@ -18,21 +20,21 @@ The figure below gives an overview of the PB-MOM that is to be implemented:
 
 ![](assets/markdown-img-paste-20200218140925961.jpg)
 
-The server-side is comprised of a *broker* that manages the connected clients, topics and subscriptions, and which acts as an intermediate responsible for publishing messages to the subscribers of a given topic.  
+The server-side is comprised of a *Broker* that manages the connected clients (publishers and subscribers), topics and subscriptions, and which acts as an intermediate responsible for publishing messages to the subscribers of a given topic.  
 
 The project is comprised of the following main tasks:
 
 **Task A.** Implement classes for the messages to be used in the publish-subscribe protocol between clients and the broker.
 
-**Task B.** Implement the storage of topics and subscriptions in the broker, and the processing of publish-subscribe messages received from connected clients.
+**Task B.** Implement the storage of topics and subscriptions in the broker, and the dispatcher responsible for processing of publish-subscribe messages received from connected clients.
 
-**Task C.** Application of the PB-MOM for implementing a small IoT system in which a sensor publishes the current temperature on a temperature topic to which a display is subscribing (see also lab-exercises from earlier weeks and project 1).
+**Task C.** Application of the PB-MOM for implementing a small IoT system in which a sensor (client) publishes the current temperature on a temperature topic to which a display (client) is subscribing (see also lab-exercises from earlier weeks and project 1).
 
 **Task D.** Experiment with PB-MOM for implementing the ChApp (Chat Social Network Application) where users can send short messages to each other via topics similar to what is found in may social network applications.
 
 **Task E.** Extend the broker such that if a subscribing client is currently disconnected and later reconnects, then the client will be provided with the messages that may have been published on the topic while the client was disconnected.
 
-**Task F.** Extend the broker from being single-threaded to being multi-threaded having a thread for handling each connected client.
+**Task F.** Extend the broker from being single-threaded to being multi-threaded having a dispatcher thread for handling each connected client.
 
 **It is only required to do one of the tasks E or F - and not both.**
 
@@ -44,9 +46,7 @@ https://github.com/selabhvl/dat110-project2-startcode.git
 
 which contains an Eclipse-project with start-code.
 
-**NOTE** When opening the project in Eclipse, there will be some compile-errors. These will go away as you complete the implementation of the tasks below.
-
-n order for the group to use their own git-repository for the further work on the codebase, one member of the group must create an empty repository on github/bitbucket without a README file and without a `.gitignore` file, and then perform the following operations
+In order for the group to use their own git-repository for the further work on the codebase, one member of the group must create an empty repository on github/bitbucket without a README file and without a `.gitignore` file, and then perform the following operations
 
 `git remote remove origin`
 
@@ -62,11 +62,13 @@ https://github.com/selabhvl/dat110-project2-testing
 
 which contains a number of unit tests that can be used for some basic testing of the implemented functionality. These tests are by no means complete, and when running the test you should also check in the Eclipse console that no exceptions are raised when running the tests.
 
+**NOTE:** When opening the projects in Eclipse, there will be some compile-errors. These will go away as you complete the implementation of the tasks below.
+
 ### Task A: Publish-subscribe Protocol Messages
 
 The messages to be exchanged between the clients and the broker is to be defined as classes in the `no.hvl.dat110.messages` package. The base message class is `Message` and all message classes must be subclasses of this class. All messages will contain information about a `user` and have a `type` as defined in `MessageType.java`. The `user` is assumed to uniquely identify a connected client.
 
-The communication between the client and the broker is to be based on the message transport layer/service implemented as part of project 1. An implementation of this layer is provided a part of the start-code in the `no.hvl.dat110.messagetransport` package
+The communication between the client and the broker is to be based on the message transport layer/service implemented as part of project 1. An implementation of this layer is provided a part of the start-code in the `no.hvl.dat110.messagetransport` package.
 
 The `no.hvl.dat110.messages` already contains classes implementing the following messages for the publish-subscribe protocol:
 
@@ -187,7 +189,7 @@ You are required to complete the implementation of the following methods in [Sto
 
 The TODO-comments in `Storage.java` class provides more detailed information about what the individual methods are supposed to do.
 
-The package `no.hvl.dat110.broker.storage.tests` contains some basic unit tests that can be used to test the implementation of the storage methods.
+The package `no.hvl.dat110.broker.storage.tests` in the `dat110-prosject2-testing' project contains some basic unit tests that can be used to test the implementation of the storage methods.
 
 #### Task B.2 Broker Dispatcher for Message Processing
 
