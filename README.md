@@ -146,6 +146,7 @@ public abstract class Stopable extends Thread {
 }
 ```
 The classes `StopableExample.java` and `StopableExampleMain.java` contains an example of use of Stopable-thread abstraction.
+
 #### Task B.1 Broker Storage
 
 The class [`Storage.java`](https://github.com/selabhvl/dat110-project2-startcode/blob/master/src/no/hvl/dat110/broker/Storage.java) of the broker implements an in-memory storage where the broker can store information about connected clients and the subscription of user (clients) to topics. The start of the class is already provided:
@@ -217,7 +218,9 @@ The dispatcher contains an implementation of the `onConnect` and on `onDisconnec
 
 in order to be able to also process the remaining types of messages.
 
-The tests found in the `no.hvl.dat110.broker.processing.tests` package can be used to test the implemented methods.**Please Note** that the tests in the package will have to be run one at a time as they are using the same TCP/IP port for the broker.
+The tests found in the `no.hvl.dat110.broker.processing.tests` package can be used to test the implemented methods.
+
+**Please Note** that the tests in the package will have to be run one at a time as they are using the same TCP/IP port for the broker.
 
 ### Task C: IoT sensor-display application
 
@@ -348,7 +351,7 @@ The aim of this task is to extend the implementation of the broker such that the
 
 - augmenting the broker storage such that buffering of messages for the clients becomes possible. **Hint:** you will need an additional hash-map in Storage.java to store a set of messages for a user that is currently disconnected.
 - changing the implementation of how a connect from a client is handled by the dispatcher.**Hint:** you will have to send any buffered messages to the connecting client.  
-- changing the implementation of how a publish from the client is processed by the dispatcher.**Hint:** if a subscribing client is currently disconnected (does not have a session), then the message will have to be buffered
+- changing the implementation of how a publish-message from the client is processed by the dispatcher.**Hint:** if a subscribing client is currently disconnected (does not have a session), then the message will have to be buffered.
 
 You may use the ChApp-application or a revised version of the IoT-system to test the buffering implementation; or alternatively write a unit test similar to the ones found in the `no.hvl.dat110.broker.processing.tests` package to create a scenario where a client (subscriber) disconnects for a while and then reconnects.
 
@@ -360,7 +363,7 @@ The implementation of the dispatcher in the `Dispatcher.java` class runs as a si
 
 The aim of this task is to change the implementation of the dispatcher such that each client session has an associated thread which processes the incoming message from the corresponding client.
 
-Adressing this task involves:
+Addressing this task involves:
 
 - creating a new dispatcher-thread in the broker whenever a client connects, i.e., the `waitConnect`-methods in the broker is executed.
 - a dispatcher thread will then wait for incoming messages from the client and handles these accordingly (as before). This means that the doProcess-methods of the dispatcher no longer should iterative across all client-sessions since each dispatcher-thread handles on client.
@@ -368,6 +371,11 @@ Adressing this task involves:
 
 It should also be possible to stop/terminate the execution of all current dispatcher-threads. In the current implementation, the single threaded dispatcher can be stopped by invoking the `doStop`-method on the dispatcher.
 
+### Summary
+
+The figure below summarises the implementation with the red boxes indicating classes where you have to write code in order to complete the tasks of the project.
+
+![](assets/markdown-img-paste-20200224093208647.png)
 
 ### Handing in the project
 

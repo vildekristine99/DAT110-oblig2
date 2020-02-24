@@ -14,7 +14,7 @@ public class StopableExampleMain {
 		
 		try {
 			
-			Thread.sleep(RUNNINGTIME); // allow for reception of outstanding messages
+			Thread.sleep(RUNNINGTIME); 
 			
 			System.out.println("main thread - doStop");
 			t.doStop();
