@@ -13,11 +13,18 @@ public class TemperatureDevice {
 		TemperatureSensor sn = new TemperatureSensor();
 		
 		
-		Client client = new Client("Sensor", Common.BROKERHOST, Common.BROKERPORT);
+		Client client = new Client("sensor", Common.BROKERHOST, Common.BROKERPORT);
 		client.connect();
+		
 		for(int i = 0; i < COUNT; i++) {
 			client.publish(Common.TEMPTOPIC, Integer.toString(sn.read()));
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
+		
 		client.disconnect();
 		
 		// TODO - start

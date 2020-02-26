@@ -36,6 +36,6 @@ public class PublishMsg extends Message {
 
 	@Override
 	public String toString() {
-		return ("DeleteTopicMsg [topic=" + topic + "]" + super.toString());
+		return ("PublishMsg [topic=" + topic + "]" + super.toString());
 	}
 }
