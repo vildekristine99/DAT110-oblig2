@@ -1,10 +1,13 @@
 package no.hvl.dat110.broker;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import no.hvl.dat110.common.TODO;
+import no.hvl.dat110.messages.Message;
 import no.hvl.dat110.common.Logger;
 import no.hvl.dat110.messagetransport.Connection;
 
@@ -16,12 +19,15 @@ public class Storage {
 	
 	// data structure for managing currently connected clients
 	// maps from user to corresponding client session object
-	
 	protected ConcurrentHashMap<String, ClientSession> clients;
+	
+	
+	protected ConcurrentHashMap<String, List<Message>> offliners;
 
 	public Storage() {
 		subscriptions = new ConcurrentHashMap<String, Set<String>>();
 		clients = new ConcurrentHashMap<String, ClientSession>();
+		offliners = new ConcurrentHashMap<String, List<Message>>();
 	}
 
 	public Collection<ClientSession> getSessions() {
@@ -29,14 +35,11 @@ public class Storage {
 	}
 
 	public Set<String> getTopics() {
-
 		return subscriptions.keySet();
-
 	}
 
 	// get the session object for a given user
-	// session object can be used to send a message to the user
-	
+	// session object can be used to send a message to the user	
 	public ClientSession getSession(String user) {
 
 		ClientSession session = clients.get(user);
@@ -49,6 +52,18 @@ public class Storage {
 		return (subscriptions.get(topic));
 
 	}
+	
+	
+	//Task E
+	public void addOffliner(String user, Message msg) {
+		if(offliners.containsKey(user)) {
+			offliners.get(user).add(msg);
+		} else {
+			List<Message> msgs = new ArrayList<Message>();
+			msgs.add(msg);
+			offliners.put(user, msgs);
+		}
+	}
 
 	public void addClientSession(String user, Connection connection) {
 		ClientSession cs = new ClientSession(user, connection);
@@ -57,8 +72,6 @@ public class Storage {
 		if(!clients.containsKey(user)) {
 			clients.put(user, cs);
 		}
-		
-		//throw new UnsupportedOperationException(TODO.method());
 		
 	}
 
@@ -102,7 +115,9 @@ public class Storage {
 		// TODO: add the user as subscriber to the topic
 		
 		if(subscriptions.containsKey(topic)) {
-			subscriptions.get(topic).add(user);
+			Set<String> subscribers = subscriptions.get(topic);
+			subscribers.add(user);
+			subscriptions.replace(topic, subscribers);
 		}
 		//throw new UnsupportedOperationException(TODO.method());
 		
@@ -112,7 +127,11 @@ public class Storage {
 
 		// TODO: remove the user as subscriber to the topic
 		if(subscriptions.containsKey(topic)) {
-			subscriptions.get(topic).remove(user);
+			Set<String> subscribers = subscriptions.get(topic);
+			if(subscribers.contains(topic)) {
+				subscribers.remove(user);
+			}
+			subscriptions.replace(topic, subscribers);			
 		}
 		//throw new UnsupportedOperationException(TODO.method());
 	}

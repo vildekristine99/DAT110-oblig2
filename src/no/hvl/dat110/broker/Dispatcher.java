@@ -1,7 +1,9 @@
 package no.hvl.dat110.broker;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.Collection;
+import java.util.List;
 
 import no.hvl.dat110.common.TODO;
 import no.hvl.dat110.common.Logger;
@@ -84,6 +86,7 @@ public class Dispatcher extends Stopable {
 		}
 	}
 
+	//Task E
 	// called from Broker after having established the underlying connection
 	public void onConnect(ConnectMsg msg, Connection connection) {
 
@@ -92,6 +95,16 @@ public class Dispatcher extends Stopable {
 		Logger.log("onConnect:" + msg.toString());
 
 		storage.addClientSession(user, connection);
+		
+		if(storage.offliners.containsKey(user)) {
+			ClientSession session = storage.getSession(user);
+			
+			for(Message m : storage.offliners.get(user)) {
+				session.send(m);
+			}
+			
+			storage.offliners.remove(user);
+		}
 
 	}
 
@@ -101,7 +114,10 @@ public class Dispatcher extends Stopable {
 		String user = msg.getUser();
 
 		Logger.log("onDisconnect:" + msg.toString());
-
+		
+		//Task E
+		//storage.addOffliner(user, msg);
+		
 		storage.removeClientSession(user);
 
 	}
@@ -157,24 +173,36 @@ public class Dispatcher extends Stopable {
 		String user = msg.getUser();
 		storage.removeSubscriber(user, topic);
 		
-		//throw new UnsupportedOperationException(TODO.method());
+		
 	}
 
+	//Task E
 	public void onPublish(PublishMsg msg) {
 
 		Logger.log("onPublish:" + msg.toString());
-
+		
+		String topic = msg.getTopic();
+		Set<String> sub = storage.getSubscribers(topic);
+		
+		ClientSession session = null;
+		
+		for(String user : sub) {
+			session = storage.getSession(user);
+			if(session != null) {
+				session.send(msg);
+			} else {
+				storage.addOffliner(user, msg);
+			}
+		}
 		// TODO: publish the message to clients subscribed to the topic
 		// topic and message is contained in the subscribe message
 		// messages must be sent used the corresponding client session objects
-		String topic = msg.getTopic();
-		Set<String> sub = storage.getSubscribers(topic);
-		//.stream().forEach(s -> storage.getSession(s).send(msg));
+		//Set<String> offSub = storage.getOfflineSessions();
 		
-		for (String user : sub) {
-			storage.getSession(user).send(msg);
-		}
-		//throw new UnsupportedOperationException(TODO.method());
-
+//		for (String user : sub) {
+//			storage.getSession(user).send(msg);
+//		}
+		
 	}
+	
 }
