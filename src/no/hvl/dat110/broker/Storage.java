@@ -128,7 +128,7 @@ public class Storage {
 		// TODO: remove the user as subscriber to the topic
 		if(subscriptions.containsKey(topic)) {
 			Set<String> subscribers = subscriptions.get(topic);
-			if(subscribers.contains(topic)) {
+			if(subscribers.contains(user)) {
 				subscribers.remove(user);
 			}
 			subscriptions.replace(topic, subscribers);			
